@@ -36,6 +36,7 @@ pathm34 = "../soundfiles/m3-4.wav"
 
 p2_40 = "../soundfiles/set_2/4-0.wav"
 p2_01 = "../soundfiles/set_2/0-1.wav"
+p2_m16 = "../soundfiles/set_2/m1-6.wav"
 
 
 rate01, data01 = wavfile.read(path01)
@@ -66,8 +67,9 @@ ratem34, datam34 = wavfile.read(pathm34)
 
 r2_40,d2_40 = wavfile.read(p2_40)
 r2_01, d2_01 = wavfile.read(p2_01)
+r2_m16, d2_m16 = wavfile.read(p2_m16)
 
-soundList2 = [d2_40, d2_01]
+soundList2 = [d2_40, d2_01, d2_m16]
 
 
 soundTagList = ["data01", "data02", "data03", "data04", "data11", "data12", "data13", 
@@ -78,19 +80,17 @@ soundList1 = [data01, data02, data03, data04, data11, data12, data13, data14, da
 data24, data33, data34, datam11, datam12, datam13, datam14, datam22, datam23, datam24, 
 datam33, datam34]
 
-corrList = []
+# for d in soundList:
+# 	print(len(d))
+# 	# left is the data from channel 0.
+# 	left = d[44000:45000, 0].astype(np.float64)
 
-for d in soundList:
-	print(len(d))
-	# left is the data from channel 0.
-	left = d[44000:45000, 0].astype(np.float64)
+# 	# right is the data from channel 1.
+# 	right = d[44000:45000, 1].astype(np.float64)
 
-	# right is the data from channel 1.
-	right = d[44000:45000, 1].astype(np.float64)
+# 	corr = scp.correlate(left, right, method="direct")
 
-	corr = scp.correlate(left, right, method="direct")
-
-# 	index, res = max(enumerate(corr),  key=operator.itemgetter(1))
+# # 	index, res = max(enumerate(corr),  key=operator.itemgetter(1))
 # 	corrList.append(index)
 
 # 	if d is datam13:
@@ -100,24 +100,25 @@ for d in soundList:
 
 # corrTups = zip(soundTagList, corrList)
 
-print corrTups
+# print corrTups
 
-sampleLen = 200;
+sampleLen = 2000;
 modeList = []
 
 for j in soundList2:
-	for i in range(sampleLen, len(j)+1, sampleLen):
-		left = j[i-sampleLen:i, 0].astype(np.float64)
-		right = j[i-sampleLen:i, 1].astype(np.float64)
-		corr = scp.correlate(left, right, mode='same', method='direct')
+	corrList = []
+	for i in range(len(j)):#range(sampleLen, len(j)+1, sampleLen):
+		left = j[:, 0].astype(np.float64)
+		right = j[:, 1].astype(np.float64)
+		corr = scp.correlate(left, right)
 		index, res = max(enumerate(corr),  key=operator.itemgetter(1))
-		corrList.append(sampleLen/2 - index)
+		corrList.append(len(corr)/2 - index)
 	modeList.append(max(set(corrList), key=corrList.count))
 	plt.hist(corrList)
 	plt.xlabel("Samples")
 	plt.ylabel("Correlation")
 	plt.show()
-maxTups = zip(["d2_40", "d2_01"], modeList)
+maxTups = zip(["d2_40", "d2_01", "d2_m16"], modeList)
 print maxTups
 
 # plt.hist(corrList)
