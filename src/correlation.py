@@ -56,34 +56,35 @@ ratem24, datam24 = wavfile.read(pathm24)
 ratem33, datam33 = wavfile.read(pathm33)
 ratem34, datam34 = wavfile.read(pathm34)
 
-soundTagList = ["data01", "data02", "data03", "data04", "data11", "data12", "data13", 
-"data14", "data22", "data23", "data24", "data33", "data34", "datam11", "datam12", 
+soundTagList = ["data01", "data02", "data03", "data04", "data11", "data12", "data13",
+"data14", "data22", "data23", "data24", "data33", "data34", "datam11", "datam12",
 "datam13", "datam14", "datam22", "datam23", "datam24", "datam33", "datam34"]
 
-soundList = [data01, data02, data03, data04, data11, data12, data13, data14, data22, data23, 
-data24, data33, data34, datam11, datam12, datam13, datam14, datam22, datam23, datam24, 
+soundList = [data01, data02, data03, data04, data11, data12, data13, data14, data22, data23,
+data24, data33, data34, datam11, datam12, datam13, datam14, datam22, datam23, datam24,
 datam33, datam34]
 
 corrList = []
 
 for d in soundList:
+	print(len(d))
 	# left is the data from channel 0.
-	left = d[45000:50000, 0].astype(np.float64)
+	left = d[44000:45000, 0].astype(np.float64)
 
 	# right is the data from channel 1.
-	right = d[45000:50000, 1].astype(np.float64)
+	right = d[44000:45000, 1].astype(np.float64)
 
-	corr = scp.correlate(left, right)
+	corr = scp.correlate(left, right, method="direct")
 
 	index, res = max(enumerate(corr),  key=operator.itemgetter(1))
 	corrList.append(index)
 
 	if d is datam13:
 		y = corr
+		plt.figure()
 		plt.plot(y)
 		plt.show()
 
 corrTups = zip(soundTagList, corrList)
 
 print corrTups
-
