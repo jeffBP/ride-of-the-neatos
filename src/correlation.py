@@ -32,6 +32,11 @@ pathm24 = "../soundfiles/m2-4.wav"
 pathm33 = "../soundfiles/m3-3.wav"
 pathm34 = "../soundfiles/m3-4.wav"
 
+#set 2
+
+p2_40 = "../soundfiles/set_2/4-0.wav"
+p2_01 = "../soundfiles/set_2/0-1.wav"
+
 
 rate01, data01 = wavfile.read(path01)
 rate02, data02 = wavfile.read(path02)
@@ -56,11 +61,19 @@ ratem24, datam24 = wavfile.read(pathm24)
 ratem33, datam33 = wavfile.read(pathm33)
 ratem34, datam34 = wavfile.read(pathm34)
 
+#set 2
+
+r2_40,d2_40 = wavfile.read(p2_40)
+r2_01, d2_01 = wavfile.read(p2_01)
+
+soundList2 = [d2_40, d2_01]
+
+
 soundTagList = ["data01", "data02", "data03", "data04", "data11", "data12", "data13", 
 "data14", "data22", "data23", "data24", "data33", "data34", "datam11", "datam12", 
 "datam13", "datam14", "datam22", "datam23", "datam24", "datam33", "datam34"]
 
-soundList = [data01, data02, data03, data04, data11, data12, data13, data14, data22, data23, 
+soundList1 = [data01, data02, data03, data04, data11, data12, data13, data14, data22, data23, 
 data24, data33, data34, datam11, datam12, datam13, datam14, datam22, datam23, datam24, 
 datam33, datam34]
 
@@ -87,21 +100,21 @@ corrList = []
 
 #print corrTups
 
-sampleLen = 2000;
-maxList = []
+sampleLen = 200;
+modeList = []
 
-for j in soundList:
-	for i in range(2000, len(j)+1, sampleLen):
+for j in soundList2:
+	for i in range(sampleLen, len(j)+1, sampleLen):
 		left = j[i-sampleLen:i, 0].astype(np.float64)
 		right = j[i-sampleLen:i, 1].astype(np.float64)
 		corr = scp.correlate(left, right, mode='same', method='direct')
 		index, res = max(enumerate(corr),  key=operator.itemgetter(1))
-		corrList.append(index)
-	maxList.append(max(corrList))
-maxTups = zip(soundTagList, maxList)
+		corrList.append(sampleLen/2 - index)
+	modeList.append(max(set(corrList), key=corrList.count))
+	plt.hist(corrList)
+	plt.xlabel("Samples")
+	plt.ylabel("Correlation")
+	plt.show()
+maxTups = zip(["d2_40", "d2_01"], modeList)
 print maxTups
 
-# plt.hist(corrList)
-# plt.xlabel("Samples")
-# plt.ylabel("Correlation")
-# plt.show()s
