@@ -66,24 +66,42 @@ datam33, datam34]
 
 corrList = []
 
-for d in soundList:
-	# left is the data from channel 0.
-	left = d[45000:50000, 0].astype(np.float64)
+# for d in soundList:
+# 	# left is the data from channel 0.
+# 	left = d[45000:50000, 0].astype(np.float64)
 
-	# right is the data from channel 1.
-	right = d[45000:50000, 1].astype(np.float64)
+# 	# right is the data from channel 1.
+# 	right = d[45000:50000, 1].astype(np.float64)
 
-	corr = scp.correlate(left, right)
+# 	corr = scp.correlate(left, right)
 
-	index, res = max(enumerate(corr),  key=operator.itemgetter(1))
-	corrList.append(index)
+# 	index, res = max(enumerate(corr),  key=operator.itemgetter(1))
+# 	corrList.append(index)
 
-	if d is datam13:
-		y = corr
-		plt.plot(y)
-		plt.show()
+# 	if d is datam13:
+# 		y = corr
+# 		plt.plot(y)
+# 		plt.show()
 
-corrTups = zip(soundTagList, corrList)
+# corrTups = zip(soundTagList, corrList)
 
-print corrTups
+#print corrTups
 
+sampleLen = 2000;
+maxList = []
+
+for j in soundList:
+	for i in range(2000, len(j)+1, sampleLen):
+		left = j[i-sampleLen:i, 0].astype(np.float64)
+		right = j[i-sampleLen:i, 1].astype(np.float64)
+		corr = scp.correlate(left, right, mode='same', method='direct')
+		index, res = max(enumerate(corr),  key=operator.itemgetter(1))
+		corrList.append(index)
+	maxList.append(max(corrList))
+maxTups = zip(soundTagList, maxList)
+print maxTups
+
+# plt.hist(corrList)
+# plt.xlabel("Samples")
+# plt.ylabel("Correlation")
+# plt.show()s
