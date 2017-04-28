@@ -76,15 +76,33 @@ for d in soundList:
 
 	corr = scp.correlate(left, right, method="direct")
 
-	index, res = max(enumerate(corr),  key=operator.itemgetter(1))
-	corrList.append(index)
+# 	index, res = max(enumerate(corr),  key=operator.itemgetter(1))
+# 	corrList.append(index)
 
-	if d is datam13:
-		y = corr
-		plt.figure()
-		plt.plot(y)
-		plt.show()
+# 	if d is datam13:
+# 		y = corr
+# 		plt.plot(y)
+# 		plt.show()
 
-corrTups = zip(soundTagList, corrList)
+# corrTups = zip(soundTagList, corrList)
 
 print corrTups
+
+sampleLen = 2000;
+maxList = []
+
+for j in soundList:
+	for i in range(2000, len(j)+1, sampleLen):
+		left = j[i-sampleLen:i, 0].astype(np.float64)
+		right = j[i-sampleLen:i, 1].astype(np.float64)
+		corr = scp.correlate(left, right, mode='same', method='direct')
+		index, res = max(enumerate(corr),  key=operator.itemgetter(1))
+		corrList.append(index)
+	maxList.append(max(corrList))
+maxTups = zip(soundTagList, maxList)
+print maxTups
+
+# plt.hist(corrList)
+# plt.xlabel("Samples")
+# plt.ylabel("Correlation")
+# plt.show()s
