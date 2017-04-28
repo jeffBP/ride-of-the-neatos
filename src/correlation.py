@@ -61,6 +61,7 @@ ratem24, datam24 = wavfile.read(pathm24)
 ratem33, datam33 = wavfile.read(pathm33)
 ratem34, datam34 = wavfile.read(pathm34)
 
+
 #set 2
 
 r2_40,d2_40 = wavfile.read(p2_40)
@@ -79,14 +80,15 @@ datam33, datam34]
 
 corrList = []
 
-# for d in soundList:
-# 	# left is the data from channel 0.
-# 	left = d[45000:50000, 0].astype(np.float64)
+for d in soundList:
+	print(len(d))
+	# left is the data from channel 0.
+	left = d[44000:45000, 0].astype(np.float64)
 
-# 	# right is the data from channel 1.
-# 	right = d[45000:50000, 1].astype(np.float64)
+	# right is the data from channel 1.
+	right = d[44000:45000, 1].astype(np.float64)
 
-# 	corr = scp.correlate(left, right)
+	corr = scp.correlate(left, right, method="direct")
 
 # 	index, res = max(enumerate(corr),  key=operator.itemgetter(1))
 # 	corrList.append(index)
@@ -98,7 +100,7 @@ corrList = []
 
 # corrTups = zip(soundTagList, corrList)
 
-#print corrTups
+print corrTups
 
 sampleLen = 200;
 modeList = []
@@ -118,3 +120,7 @@ for j in soundList2:
 maxTups = zip(["d2_40", "d2_01"], modeList)
 print maxTups
 
+# plt.hist(corrList)
+# plt.xlabel("Samples")
+# plt.ylabel("Correlation")
+# plt.show()s
