@@ -38,6 +38,7 @@ p2_40 = "../soundfiles/set_2/4-0.wav"
 p2_01 = "../soundfiles/set_2/0-1.wav"
 p2_m16 = "../soundfiles/set_2/m1-6.wav"
 
+p4_40 = "../soundfiles/set_4/left.wav"
 
 rate01, data01 = wavfile.read(path01)
 rate02, data02 = wavfile.read(path02)
@@ -69,15 +70,17 @@ r2_40,d2_40 = wavfile.read(p2_40)
 r2_01, d2_01 = wavfile.read(p2_01)
 r2_m16, d2_m16 = wavfile.read(p2_m16)
 
-soundList2 = [d2_40, d2_01, d2_m16]
+r4_40, d4_40 = wavfile.read(p4_40)
 
+soundList2 = [d4_40]
+print soundList2
 
-soundTagList = ["data01", "data02", "data03", "data04", "data11", "data12", "data13", 
-"data14", "data22", "data23", "data24", "data33", "data34", "datam11", "datam12", 
+soundTagList = ["data01", "data02", "data03", "data04", "data11", "data12", "data13",
+"data14", "data22", "data23", "data24", "data33", "data34", "datam11", "datam12",
 "datam13", "datam14", "datam22", "datam23", "datam24", "datam33", "datam34"]
 
-soundList1 = [data01, data02, data03, data04, data11, data12, data13, data14, data22, data23, 
-data24, data33, data34, datam11, datam12, datam13, datam14, datam22, datam23, datam24, 
+soundList1 = [data01, data02, data03, data04, data11, data12, data13, data14, data22, data23,
+data24, data33, data34, datam11, datam12, datam13, datam14, datam22, datam23, datam24,
 datam33, datam34]
 
 # for d in soundList:
@@ -107,10 +110,10 @@ modeList = []
 
 for j in soundList2:
 	corrList = []
-	for i in range(len(j)):#range(sampleLen, len(j)+1, sampleLen):
-		left = j[:, 0].astype(np.float64)
-		right = j[:, 1].astype(np.float64)
-		corr = scp.correlate(left, right)
+	for i in range(4000, len(j)+1, 2000):#range(sampleLen, len(j)+1, sampleLen):
+		left = j[i-4000:i, 0].astype(np.float64)
+		right = j[i-3000: i-1000, 1].astype(np.float64)
+		corr = scp.correlate(left, right, mode="valid", method="auto")
 		index, res = max(enumerate(corr),  key=operator.itemgetter(1))
 		corrList.append(len(corr)/2 - index)
 	modeList.append(max(set(corrList), key=corrList.count))

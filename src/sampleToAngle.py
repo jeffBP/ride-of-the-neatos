@@ -13,7 +13,7 @@ def sampleToAngle(n):
         x = -42.695
     else:
         x = n
-    A = 340.29/(44000*0.0254)
+    A = 340.29/(44100*0.0254)
     denom = math.sqrt(20905*A**2*x**2 - A**4 * x**4)
     numer = 1872
     theta = math.acos(denom/numer)
@@ -22,4 +22,4 @@ def sampleToAngle(n):
     return theta
 
 if __name__ == "__main__":
-    print(math.degrees(sampleToAngle(20)))
+    print(math.degrees(sampleToAngle(-33)))
