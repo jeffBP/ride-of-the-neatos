@@ -15,19 +15,15 @@ def getSamples(file_name):
     modeList = []
     r, d = wavfile.read(file_name)
     corrList = []
-    for i in range(4000, len(d)+1, 2000):
-        left = j[i-4000:i, 0].astype(np.float64)
-        right = j[i-3000: i-1000, 1].astype(np.float64)
-        corr = scp.correlate(left, right, mode="valid", method="auto")
-        index, res = max(enumerate(corr),  key=operator.itemgetter(1))
-        corrList.append(len(corr)/2 - index)
-    modeList.append(max(set(corrList), key=corrList.count))
-    plt.hist(corrList)
-    plt.xlabel("Samples")
-    plt.ylabel("Correlation")
-    plt.show()
-    maxTups = zip(["d2_40", "d2_01", "d2_m16"], modeList)
-    return maxTups
+
+    left = d[:, 0].astype(np.float64)
+    right = d[:, 1].astype(np.float64)
+    corr = scp.correlate(left, right, mode="full", method="auto")
+    index, res = max(enumerate(corr),  key=operator.itemgetter(1))
+    corrList.append(len(corr)/2 - index)
+    samp = max(set(corrList), key=corrList.count)
+    print samp
+    return samp
 
 
 def sampleToAngle(n):
@@ -49,7 +45,7 @@ def sampleToAngle(n):
     theta = math.acos(denom/numer)
     if n  < 0:
         theta = -theta
-    return theta
+    return math.degrees(theta)
 
 if __name__ == "__main__":
     samps = getSamples("wavFile.wav")
