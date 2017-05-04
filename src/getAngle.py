@@ -22,7 +22,7 @@ def getSamples(file_name):
     index, res = max(enumerate(corr),  key=operator.itemgetter(1))
     corrList.append(len(corr)/2 - index)
     samp = max(set(corrList), key=corrList.count)
-    print samp
+    #print samp
     return samp
 
 
