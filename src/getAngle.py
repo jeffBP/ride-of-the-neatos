@@ -40,12 +40,15 @@ def sampleToAngle(n):
     else:
         x = n
     A = 340.29/(44100*0.0254)
-    denom = math.sqrt(20905*A**2*x**2 - A**4 * x**4)
+    if n > 0:
+        denom = math.sqrt(20905*A**2*x**2 - A**4 * x**4)
+    else:
+        denom = -math.sqrt(20905*A**2*x**2 - A**4 * x**4)
+
     numer = 1872
     theta = math.acos(denom/numer)
-    if n  < 0:
-        theta = -theta
-    return math.degrees(theta)
+
+    return (90 - math.degrees(theta))
 
 if __name__ == "__main__":
     samps = getSamples("wavFile.wav")

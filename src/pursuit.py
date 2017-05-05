@@ -75,7 +75,6 @@ class audioFollower(object):
 		rospy.Subscriber("/odom", Odometry, self.process_position)
 		self.commander = rospy.Publisher("cmd_vel", Twist, queue_size=10)
 		self.arrow = rospy.Publisher("/audio_src", Marker, queue_size=10)
-		self.angle_history = []
 		self.target_angle = None
 		self.theta = None
 		self.r = rospy.Rate(10)
@@ -92,16 +91,16 @@ class audioFollower(object):
 				and how fast to move forwards (not fast).
 		"""
 		spin = Twist()
-		distance = .4*get_distance(self.target_angle, self.theta)
-		spin.angular.z = -.4*get_distance(self.target_angle, self.theta)
-		#spin.linear.x = .2
+		distance = get_distance(self.target_angle, self.theta)
+		spin.angular.z = 0.3*distance
+		spin.linear.x = .1
 		return spin
 
 	def updateTargetAngle(self):
 		#Use functions created to identify audio angle
 		samps = getSamples("wavFile.wav")
 		print "Getting audio"
-		ang = sampleToAngle(samps)
+		ang = - sampleToAngle(samps)
 		print ang
 		self.target_angle = self.theta + math.radians(ang)
 		self.publishAngle()
@@ -123,13 +122,13 @@ class audioFollower(object):
 	def run(self):
 		thread = Thread(target = constant_record_and_copy, args = (self.updateTargetAngle, ))
 		thread.start()
-		while self.target_angle == None:
+		while self.target_angle == None or self.theta == None:
 			self.r.sleep()
 		while not rospy.is_shutdown():
-			#self.commander.publish(self.createVelocity())
+			self.commander.publish(self.createVelocity())
 			#print "Angling."
-			#print self.target_angle
-			#print self.theta
+			print self.target_angle
+			print self.theta
 			self.r.sleep()
 
 if __name__ == '__main__':
