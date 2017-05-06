@@ -39,21 +39,29 @@ def make_marker(angle):
 	return my_marker
 
 def constant_record_and_copy(callback):
+	""" Records audio on our RasPi, and copies it to the computer running this code.
+
+		Args:
+			callback: function to run inbetween recordings
+
+		Returns: Nothing """
 	while True:
-		print "Recording new file."
 		#These lines record the audio, and copy it onto our computer
 		subprocess.call('ssh pi@192.168.17.201 /home/pi/use_case_scripts/ride-of-the-neatos/Record_from_lineIn_Micbias_modified.sh > /dev/null', shell=True)
 		subprocess.call('scp pi@192.168.17.201:/home/pi/wavFile.wav ~/catkin_ws/src/ride-of-the-neatos/src', shell=True)
-		callback()
-		# err = os.system("ssh pi@192.168.17.201 /home/pi/use_case_scripts/ride_of_the_neatos/Record_from_lineIn_Micbias.sh > /dev/null")
-		# if err != 0:
-		# 	print "Error recording on Pi"
-		#
-		# err = os.system("scp pi@192.168.17.201:/home/pi/wavFile.wav ~/catkin_ws/src/ride-of-the-neatos/src")
-		# if err != 0:
-		# 	print "Error copying file from Pi"
+		callback() #Allow the neato controller to process the data before recording another
 
 def get_distance(angle1, angle2):
+	""" Takes two angles, and returns the distance between the first
+		and second angles. Helps deal with the problems angles tend to
+		cause by being circles.
+
+		Args:
+			angle1: Starting angle
+			angle2: Destination angle
+
+		Returns: the distance to travel, positive or negative based on
+		 		 which direction to travel between angles to get that distance"""
     phi = abs(angle2-angle1) % 2*math.pi
     sign = 1
     # used to calculate sign
@@ -97,11 +105,11 @@ class audioFollower(object):
 		return spin
 
 	def updateTargetAngle(self):
-		#Use functions created to identify audio angle
+		""" Identifies where a sound source is
+			in the Odometry frame, based on direction
+			from the robot."""
 		samps = getSamples("wavFile.wav")
-		print "Getting audio"
 		ang = - sampleToAngle(samps)
-		print ang
 		self.target_angle = self.theta + math.radians(ang)
 		self.publishAngle()
 
@@ -116,10 +124,13 @@ class audioFollower(object):
 		self.theta = angles[2]
 
 	def publishAngle(self):
+		"""Publishes an arrow marker indicating where the audio source is"""
 		arrow_marker = make_marker(self.target_angle)
 		self.arrow.publish(arrow_marker)
 
 	def run(self):
+		""" Creates a thread to constantly update the sound recording, and then commands
+			the neato to move according to where the last sound came from"""
 		thread = Thread(target = constant_record_and_copy, args = (self.updateTargetAngle, ))
 		thread.start()
 		while self.target_angle == None or self.theta == None:
