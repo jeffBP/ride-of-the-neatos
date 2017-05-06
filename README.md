@@ -10,6 +10,6 @@ This code requires Scipy and Ros. Ros can be installed using the installation in
 
 The code for the neatos is in Paul Ruvolo's [CompRobo](https://github.com/paulruvolo/comprobo17) repository. Both that code, and this repository, should be located in the /src director inside your catkin workspace.
 
-You must also have a Raspberry Pi, with a Cirrus Logic sound card. For the card to work correctly, you should follow the installation instructions [here](https://www.element14.com/community/thread/42202/l/cirrus-logic-audio-card-working-on-the-raspberry-pi-2?displayFullThread=true). Finally, you will need to have paswordless ssh set up to communicate with this pi. Instructions to set this up are located at [linuxproblem.org](http://www.linuxproblem.org/art_9.html).
+You must also have a Raspberry Pi, with a Cirrus Logic sound card and stereo microphones. For the card to work correctly, you should follow the installation instructions [here](https://www.element14.com/community/thread/42202/l/cirrus-logic-audio-card-working-on-the-raspberry-pi-2?displayFullThread=true). Finally, you will need to have paswordless ssh set up to communicate with this pi. Instructions to set this up are located at [linuxproblem.org](http://www.linuxproblem.org/art_9.html).
 
 Once these are installed, you can launch the program by running roscore, launching the neato program in the CompRobo directory, and running ```pursit.py``` from this repository.
